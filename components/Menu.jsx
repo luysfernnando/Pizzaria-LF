@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Menu({ pizzas }) {
     return (
-        <div className={css.container}>
+        <div id="menu" className={css.container}>
             <div className={css.heading}>
                 <span>NOSSO MENU</span>
                 <span>Menu Que Sempre</span>
