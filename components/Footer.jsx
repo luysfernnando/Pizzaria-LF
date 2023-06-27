@@ -2,14 +2,15 @@ import css from '../styles/Footer.module.css';
 import {UilFacebook, UilGithub, UilInstagram} from "@iconscout/react-unicons";
 import Image from "next/image";
 import Logo from "../assets/LF_22.png";
+import Link from 'next/link';
 export default function Footer () {
     return (
         <div className={css.container}>
            <span>TODOS OS DIREITOS RESERVADOS</span>
             <div className={css.social}>
-                <UilFacebook size={45}/>
-                <UilGithub size={45}/>
-                <UilInstagram size={45}/>
+                <Link href={"#"}><UilFacebook size={45}/></Link>
+                <Link href={"#"}><UilGithub size={45}/></Link>
+                <Link href={"#"}><UilInstagram size={45}/></Link>
             </div>
 
             <div className={css.logo}>
