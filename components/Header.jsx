@@ -29,10 +29,12 @@ export default function Header() {
 
             {/* Right Side */}
             <div className={css.rightSide}>
-                <div className={css.cart}>
-                    <UilShoppingBag size={35} color="#2E2E2E" />
-                    <div className={css.badge}>{items}</div>
-                </div>
+                <Link href='/cart'>
+                    <div className={css.cart}>
+                        <UilShoppingBag size={35} color="#2E2E2E" />
+                        <div className={css.badge}>{items}</div>
+                    </div>
+                </Link>
             </div>
         </div>
     )

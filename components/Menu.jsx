@@ -29,6 +29,7 @@ export default function Menu({ pizzas }) {
                                         alt=''
                                         objectFit="cover"
                                         layout="fill"
+                                        unoptimized
                                     />
                                 </div>
                             </Link>
