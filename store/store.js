@@ -3,12 +3,12 @@ import create from 'zustand';
 export const useStore = create(
     (set) => ({
 
-        // cart
+        // Cart
         cart: {
             pizzas: []
         },
 
-        // add Piiza in cart
+        // Add Piiza in Cart
         addPizza: (data) =>
             set((state) => ({
                 cart: {
@@ -22,6 +22,14 @@ export const useStore = create(
                 cart: {
                     pizzas: state.cart.pizzas.filter((_, i) => i != index)
                 }
-            }))
+            })),
+
+        // Clear Cart
+        resetCart: () =>
+        set(()=> ({
+            cart: {
+                pizzas: []
+            }
+        }))
     })
 )

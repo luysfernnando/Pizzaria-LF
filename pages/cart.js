@@ -4,10 +4,13 @@ import Layout from "../components/Layout";
 import { urlFor } from "../lib/client";
 import css from "../styles/Cart.module.css";
 import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
+import OrderModal from "../components/OrderModal";
 
 export default function Cart() {
     const CartData = useStore((state) => state.cart)
     const removePizza = useStore((state) => state.removePizza)
+    const [PaymentMethod, setPaymentMethod] = useState(null)
 
     const handleRemove = (i) => {
         removePizza(i);
@@ -15,6 +18,16 @@ export default function Cart() {
     };
 
     const total = () => CartData.pizzas.reduce((acc, curr) => acc + curr.quantity * curr.price, 0)
+
+    const handleOnDelivery = () => {
+        setPaymentMethod(0);
+        /*
+          Como o Next.js renderiza o componente primeiro no servidor, teriamos um erro ao usar
+          o localStorage. Pra evitar isso, vamos verificar se há uma janela habilitada do browser
+          do usuário. Se tiver, então podemos usar o localStorage. Caso contrário, não.
+        */
+        typeof window !== 'undefined' && localStorage.setItem('total', total());
+    }
     return (
         <Layout>
 
@@ -25,13 +38,15 @@ export default function Cart() {
 
                     <table className={css.table}>
                         <thead>
-                            <th>Pizza</th>
-                            <th>Nome</th>
-                            <th>Tamanho</th>
-                            <th>Preço</th>
-                            <th>Quantidade</th>
-                            <th>Total</th>
-                            <th></th>
+                            <tr>
+                                <th>Pizza</th>
+                                <th>Nome</th>
+                                <th>Tamanho</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
                         </thead>
                         <tbody className={css.tbody}>
                             {CartData.pizzas.length > 0 &&
@@ -99,12 +114,19 @@ export default function Cart() {
                     </div>
 
                     <div className={css.buttons}>
-                        <button className="btn">Pagar na Entrega</button>
+                        <button className="btn" onClick={handleOnDelivery}>Pagar na Entrega</button>
                         <button className="btn">Pagar Agora</button>
                     </div>
                 </div>
             </div>
             <Toaster />
+
+            {/* Modal */}
+            <OrderModal
+                opened={PaymentMethod === 0}
+                setOpened={setPaymentMethod}
+                PaymentMethod={PaymentMethod}
+            />
         </Layout >
     )
 };
