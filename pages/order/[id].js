@@ -64,7 +64,7 @@ export default function Orders({ order }) {
                         {order.method === 0 ? (
                             <span className={css.pending}>Na Entrega</span>
                         ) : (
-                            <span className={css.completed}>Completado</span>
+                            <span className={css.completed}>Finalizado</span>
                         )}
                     </div>
 

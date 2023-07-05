@@ -6,17 +6,22 @@ import css from "../styles/Cart.module.css";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
 import OrderModal from "../components/OrderModal";
+import {useRouter} from "next/router";
 
 export default function Cart() {
     const CartData = useStore((state) => state.cart)
     const removePizza = useStore((state) => state.removePizza)
     const [PaymentMethod, setPaymentMethod] = useState(null)
+    const [Order, setOrder] = useState(
+        typeof window !== 'undefined' && localStorage.getItem('order')
+    );
 
     const handleRemove = (i) => {
         removePizza(i);
         toast.success("Item removido do carrinho");
     };
 
+    const router = useRouter();
     const total = () => CartData.pizzas.reduce((acc, curr) => acc + curr.quantity * curr.price, 0)
 
     const handleOnDelivery = () => {
@@ -27,6 +32,24 @@ export default function Cart() {
           do usuário. Se tiver, então podemos usar o localStorage. Caso contrário, não.
         */
         typeof window !== 'undefined' && localStorage.setItem('total', total());
+    }
+
+    const handleCheckout = async () => {
+        typeof window !== 'undefined' && localStorage.setItem('total', total());
+        setPaymentMethod(1);
+        const response = await fetch('/api/stripe', {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json",
+            },
+            body: JSON.stringify(CartData.pizzas),
+        });
+
+        if (response.status === 500) return;
+
+        const data = await response.json();
+        toast.loading("Redirecionando para o checkout...");
+        router.push(data.url);
     }
     return (
         <Layout>
@@ -113,10 +136,14 @@ export default function Cart() {
                         </div>
                     </div>
 
-                    <div className={css.buttons}>
-                        <button className="btn" onClick={handleOnDelivery}>Pagar na Entrega</button>
-                        <button className="btn">Pagar Agora</button>
-                    </div>
+                    
+                    {!Order && CartData.pizzas.length > 0 ? (
+                        <div className={css.buttons}>
+                            <button className="btn" onClick={handleOnDelivery}>Pagar na Entrega</button>
+                            <button className="btn" onClick={handleCheckout}>Pagar Agora</button>
+                        </div>
+                    ) : null}
+                    
                 </div>
             </div>
             <Toaster />
