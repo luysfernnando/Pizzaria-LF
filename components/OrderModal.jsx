@@ -1,58 +1,62 @@
-import { Modal, useMantineTheme } from "@mantine/core";
-import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
-import { useStore } from "../store/store";
-import { createOrder } from "../lib/orderHandler";
-import css from '../styles/OrderModal.module.css';
-import { useRouter } from "next/router";
+import { Modal, useMantineTheme } from '@mantine/core';
+import css from '../styles/OrderModal.module.css'
+import { useState } from 'react';
+import { createOrder } from '../lib/orderHandler';
+import { useStore } from '../store/store';
+import toast, { Toaster } from "react-hot-toast"
+import { useRouter } from 'next/router';
 
 export default function OrderModal({ opened, setOpened, PaymentMethod }) {
+  const theme = useMantineTheme();
 
-    const theme = useMantineTheme();
-    const router = useRouter();
-    const [FormData, setFormData] = useState({});
+  const router = useRouter();
 
-    const handleInput = (e) => {
-        setFormData({ ...FormData, [e.target.name]: e.target.value })
+  const [FormData, setFormData] = useState({})
+
+  const handleInput = (e) => {
+    setFormData({ ...FormData, [e.target.name]: e.target.value })
+  }
+
+  const total = typeof window !== 'undefined' && localStorage.getItem('total');
+
+  const resetCart = useStore((state) => state.resetCart);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const id = await createOrder({ ...FormData, total, PaymentMethod })
+    toast.success("Order Placed");
+    resetCart();
+
+    {
+      typeof window !== 'undefined' && localStorage.setItem('order', id)
     }
 
-    const resetCart = useStore((state) => state.resetCart);
-    const total = typeof window !== 'undefined' && localStorage.getItem('total');
+    router.push(`/order/${id}`)
+  }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const id = await createOrder({ ...FormData, total, PaymentMethod });
-        // console.log('Pedido criado com sucesso, id: ', id);
-        toast.success('Pedido Realizado!');
-        resetCart();
-        {
-            typeof window !== 'undefined' && localStorage.setItem('order', id);
-        }
+  return (
+    <Modal
+      overlayColor={theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2]}
+      overlayOpacity={0.55}
+      overlayBlur={3}
+      opened={opened}
+      onClose={() => setOpened(null)}
+    >
 
-        router.push(`/order/${id}`);
-    }
+      <form action="" onSubmit={handleSubmit} className={css.formContainer}>
+        <input onChange={handleInput} type='text' name='name' required placeholder='Nome' />
+        <input onChange={handleInput} type='text' name='phone' required placeholder='Telefone' />
+        <textarea onChange={handleInput} name='address' rows={3} required placeholder='Endereço'></textarea>
 
-    return (
-        <Modal
-            overlayColor={theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2]}
-            overlayOpacity={0.55}
-            overlayBlur={3}
-            opened={opened}
-            onClose={() => setOpened(null)}
-        >
-            {/* Modal content */}
-            <form onSubmit={handleSubmit} className={css.formContainer}>
-                <input onChange={handleInput} type="text" name="name" required placeholder="Nome" />
-                <input onChange={handleInput} type="text" name="phone" required placeholder="Telefone" />
-                <textarea onChange={handleInput} name="address" rows={3} required placeholder="Endereço"></textarea>
+        <span>
+          Você vai pagar <span>R$ {total}</span> na entrega
+        </span>
 
-                <span>
-                    Você vai pagar <span>R$ {total}</span> na entrega
-                </span>
+        <button type="submit" className='btn'>Finalizar Pedido</button>
+      </form>
 
-                <button type="submit" className="btn">Finalizar Pedido</button>
-            </form>
-            <Toaster />
-        </Modal>
-    )
-};
+      <Toaster />
+
+    </Modal>
+  )
+}
