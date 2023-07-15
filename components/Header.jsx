@@ -29,8 +29,12 @@ export default function Header() {
       {/* Menu Side */}
       <ul className={css.menu}>
         <li><Link href='../'>Início</Link></li>
-        <li><Link href={"#menu"}>Menu</Link></li>
-        <li><Link href={"/"}>Contato</Link></li>
+        <li><Link href={"#menu"} scroll={false}>Menu</Link></li>
+        <li><Link href={"https://api.whatsapp.com/send?phone=5562991624471&text=Ol%C3%A1,%20gostaria%20de%20falar%20com%20voc%C3%AA"} passHref>
+          <a target="_blank" rel="noopener noreferrer">
+            Contato
+          </a>
+        </Link></li>
       </ul>
 
       {/* Right Side */}

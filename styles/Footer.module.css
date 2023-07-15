@@ -26,6 +26,11 @@
     font-size: 1.5rem;
 }
 
+.logo>*:hover{
+    color: var(--themeRed);
+    cursor: pointer;
+}
+
 .social{
     display: flex;
     gap: 1rem;

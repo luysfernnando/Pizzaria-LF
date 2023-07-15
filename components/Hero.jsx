@@ -4,6 +4,7 @@ import Cherry from '../assets/Cherry.png';
 import HeroImage from '../assets/HeroImage.png'
 import { UilPhone } from '@iconscout/react-unicons'
 import Pizza1 from '../assets/p1.png'
+import Link from 'next/link';
 
 export default function Hero() {
   return (
@@ -30,7 +31,7 @@ export default function Hero() {
         </span>
 
         <button className={`btn ${css.btn}`}>
-          Pedir Agora
+          <Link href="#menu">Pedir Agora</Link>
         </button>
 
       </div>
@@ -43,7 +44,13 @@ export default function Hero() {
         </div>
 
         <div className={css.ContactUs}>
-          <span>Fale Conosco</span>
+          <span>
+            <a
+              href="https://api.whatsapp.com/send?phone=5562991624471&text=Ol%C3%A1,%20gostaria%20de%20falar%20com%20voc%C3%AA" target="_blank"
+              rel="noopener noreferrer">
+              Fale Conosco
+            </a>
+          </span>
           <div>
             <UilPhone color='white' />
           </div>
@@ -52,11 +59,13 @@ export default function Hero() {
         <div className={css.Pizza}>
 
           <div>
-            <Image src={Pizza1} alt="" objectFit="cover" layout="intrinsic" />
+            <Link href="../pizza/pizza-italiana">
+              <Image src={Pizza1} alt="" objectFit="cover" layout="intrinsic" />
+            </Link>
           </div>
 
           <div className={css.details}>
-            <span>Pizza Italiana</span>
+            <span><Link href="../pizza/pizza-italiana">Pizza Italiana</Link></span>
             <span>
               <span style={{ color: "var(--themeRed)" }}>R$</span> 59.00
             </span>
